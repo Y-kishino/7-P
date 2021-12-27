@@ -4,8 +4,10 @@
     function SetGenderNmae($gender){
         if($gender === '0'){
             return'男';
-        } else {
+        } else if($gender === '1'){
             return'女';
+        } else {
+            return;
         }
     }
 ?>
@@ -69,6 +71,7 @@
         <div>
             <p>パスワード
             <?php echo $_POST['pass'];?>
+            <?php $passHash = password_hash($_POST['pass'],PASSWORD_DEFAULT);?>
             </p>
             
         </div>
@@ -119,7 +122,7 @@
                 <input type="hidden" value="<?php echo $_POST['familyNK'];?>" name="FNK">
                 <input type="hidden" value="<?php echo $_POST['lastNK'];?>" name="LNK">
                 <input type="hidden" value="<?php echo $_POST['mail'];?>" name="MAIL">
-                <input type="hidden" value="<?php echo $_POST['pass'];?>" name="PASS">
+                <input type="hidden" value="<?php echo $passHash;?>" name="PASS">
                 <input type="hidden" value="<?php echo $_POST['gender'];?>" name="GEN">
                 <input type="hidden" value="<?php echo $_POST['poC'];?>" name="POC">
                 <input type="hidden" value="<?php echo $_POST['prefecture'];?>" name="PRE">

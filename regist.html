@@ -41,32 +41,36 @@
                     target05.classList.add('fadeIn'); 
                     flag = 1; 
                 }
-                // if(document.from.gender.length){
-                //     const taeget06 = document.getElementById('taeget06');
-                //     taeget06.classList.add('fadeIn'); 
-                //     flag = 1;
-                //     var i = 0;
-                //     for(i=0; i< document.form.gender.length; i++){
-                //         if(document.from.gender[i].checked){
-                //             flag=0;
-                //             break;
-                //         }else{
-                //             if(!document.form.gender.checked){
-                //                 flag=1
-                //             }
-                //         }
-                //     }
+                // if(document.form.man.value == ""){
+                //     if(document.form.woman.value == ""){
+                //         const target06 = document.getElementById('target06');
+                //         target06.classList.add('fadeIn')
+                //     } 
                 // }
+                if(document.form.gender.length) { // 選択肢が複数ある場合
+                    flag = 1;
+                    var i;
+                    for(i = 0; i < document.form.gender.length; i ++){
+                        if(document.form.gender[i].checked){
+                            flag = 0; 
+                            break;
+                        }else{ 
+                                const target06 = document.getElementById('target06');
+                                target06.classList.add('fadeIn');
+                                flag = 1;
+                        }
+                    }
+                }
                 if(document.form.poC.value == ""){
                     const target07 = document.getElementById('target07');
                     target07.classList.add('fadeIn'); 
                     flag = 1; 
                 }
-                // if(document.form.prefecture.value == ""){
-                //     const target08 = document.getElementById('target08');
-                //     target08.classList.add('fadeIn'); 
-                //     flag = 1; 
-                // }
+                if(document.form.prefecture.value==100){
+                    const target08 = document.getElementById('target08');
+                    target08.classList.add('fadeIn'); 
+                    flag = 1; 
+                }
                 if(document.form.textAdd01.value == ""){
                     const target09 = document.getElementById('target09');
                     target09.classList.add('fadeIn'); 
@@ -77,11 +81,6 @@
                     target10.classList.add('fadeIn'); 
                     flag = 1; 
                 }
-                // if(document.form.textAuth.value == ""){
-                //     const target11 = document.getElementById('target11');
-                //     target11.classList.add('fadeIn'); 
-                //     flag = 1; 
-                // }
             
                 if(flag){
                     return false;//送信中止
@@ -140,8 +139,8 @@
             </div>
             <div>
                 <label>性別</label>
-                <input type="radio" name="gender"  class="textGender" value="0"><p>男</p>
-                <input type="radio" name="gender"  class="textGender" value="1"><p>女</p>
+                <input type="radio" name="gender" name="man" class="textGender" value="0"><p>男</p>
+                <input type="radio" name="gender" name="woman" class="textGender" value="1"><p>女</p>
                 <br>
                 <p id="target06" class="text alertText">性別を入力してください。</p>
             </div>
@@ -154,7 +153,7 @@
             <div>
                 <label>住所（都道府）</label>
                 <select name="prefecture" class="textPrefecture">
-                    <option >選択してください</option>
+                    <option value="100">選択してください</option>
                     <script>
                         function toOneDimention($previousValue,$currentValure){
                             return $previousValue.concat($currentValure)
@@ -199,7 +198,7 @@
                     <option value="1">  管理者  </option>
                 </select>
                 <br>
-                <p id="target11" class="text alertText">権限を選択して下さい。</p>
+                <br>
             </div>
             <div id="submitArea">
                 <input type="submit" class="text" id="submit" size="10" name="XXX" value="確認する" onClick="return check();">
