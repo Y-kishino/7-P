@@ -112,6 +112,7 @@
         </div>
 
         <div>
+            
             <form action="regist.php" method="post" class="botton01" style="width: 100px;" style="height: 50px;" style="padding-right: 100px;" >
                 <input type="submit" class="botton01" value="戻って修正する。">
                 <input type="hidden" value="<?php echo $_POST['familyN'];?>"name="FN">

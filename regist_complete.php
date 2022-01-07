@@ -1,5 +1,6 @@
 
 
+
 <?php
 mb_internal_encoding("UTF-8");
 $dsn = "mysql:dbname=make_an_account;host=localhost;";

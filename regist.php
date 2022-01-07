@@ -10,6 +10,7 @@
         <script>
             function check(){
                 var flag = 0;
+                
                 //設定開始（チェック項目の生成）
                 if(document.form.familyN.value == ""){
                     const target = document.getElementById('target');
