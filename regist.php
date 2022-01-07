@@ -41,26 +41,6 @@
                     target05.classList.add('fadeIn'); 
                     flag = 1; 
                 }
-                // if(document.form.man.value == ""){
-                //     if(document.form.woman.value == ""){
-                //         const target06 = document.getElementById('target06');
-                //         target06.classList.add('fadeIn')
-                //     } 
-                // }
-                if(document.form.gender.length) { // 選択肢が複数ある場合
-                    flag = 1;
-                    var i;
-                    for(i = 0; i < document.form.gender.length; i ++){
-                        if(document.form.gender[i].checked){
-                            flag = 0; 
-                            break;
-                        }else{ 
-                                const target06 = document.getElementById('target06');
-                                target06.classList.add('fadeIn');
-                                flag = 1;
-                        }
-                    }
-                }
                 if(document.form.poC.value == ""){
                     const target07 = document.getElementById('target07');
                     target07.classList.add('fadeIn'); 
@@ -88,8 +68,7 @@
                     return true;//送信を実行
                 }
             }
-        </script>
-     
+        </script>  
 </head>
 <body>
     <header>
@@ -102,64 +81,81 @@
             </h1>
             <div>
                 <label>名前（姓）</label>
-                <input type="text" class="text" size="20" maxlength="10" name="familyN" id="FN">
+                <input type="text" class="text" size="20" maxlength="10" name="familyN" id="FN" value="<?php if (!empty($_POST['FN'])) {
+                    echo $_POST['FN'];
+                }?>">
                 <br>
                 <p id="target" class="text alertText">名前(姓)を入力して下さい。</p>
             </div>
 
             <div>
                 <label>名前（名）</label>
-                <input type="text" class="text" size="20" maxlength="10" name="lastN">
+                <input type="text" class="text" size="20" maxlength="10" name="lastN" value="<?php if (!empty($_POST['LN'])) {
+                    echo $_POST['LN'];
+                }?>">
                 <br>
                 <p id="target01" class="text alertText">名前(名)を入力して下さい。</p>
             </div>
             <div>
                 <label>カナ（姓）</label>
-                <input type="text" class="text" size="20" maxlength="10" name="familyNK">
+                <input type="text" class="text" size="20" maxlength="10" name="familyNK" value="<?php if (!empty($_POST['FNK'])) {
+                    echo $_POST['FNK'];
+                }?>">
                 <br>
                 <p id="target02" class="text alertText">名前(姓)をカタカナで入力して下さい。</p>
             </div>
             <div>
                 <label>カナ（名）</label>
-                <input type="text" class="text" size="20" maxlength="10" name="lastNK">
+                <input type="text" class="text" size="20" maxlength="10" name="lastNK" value="<?php if (!empty($_POST['LNK'])) {
+                    echo $_POST['LNK'];
+                }?>">
                 <br>
                 <p id="target03" class="text alertText">名前(名)をカタカナで入力して下さい。</p>
             </div>
             <div>
                 <label>メールアドレス</label>
-                <input type="text" class="textMail" size="20" maxlength="100" name="mail">
+                <input type="text" class="textMail" size="20" maxlength="100" name="mail" value="<?php if (!empty($_POST['MAIL'])) {
+                    echo $_POST['MAIL'];
+                }?>">
                 <br>
                 <p id="target04" class="text alertText">メールアドレスを入力して下さい。</p>
             </div>
             <div>
                 <label>パスワード</label>
-                <input type="password" class="text" size="20" maxlength="10" name="pass">
+                <input type="password" class="text" size="20" maxlength="10" name="pass" value="<?php if (!empty($_POST['PASS'])) {
+                    echo $_POST['PASS'];
+                }?>">
                 <br>
                 <p id="target05" class="text alertText">パスワードを入力して下さい。</p>
             </div>
             <div>
                 <label>性別</label>
-                <input type="radio" name="gender" name="man" class="textGender" value="0"><p>男</p>
-                <input type="radio" name="gender" name="woman" class="textGender" value="1"><p>女</p>
+                <input type="radio" name="gender" name="man" class="textGender" checked="checked" value="0"><p>男</p>
+                <input type="radio" name="gender" name="woman" class="textGender" value="1" <?php if (!empty($_POST['GEN'])&& $_POST['GEN']==="1") {
+                    echo'checked';
+                } ?>><p>女</p>
                 <br>
                 <p id="target06" class="text alertText">性別を入力してください。</p>
             </div>
             <div>
                 <label>郵便番号</label>
-                <input type="text" class="textCode" size="8" maxlength="7" name="poC">
+                <input type="text" class="textCode" size="8" maxlength="7" name="poC" value="<?php if (!empty($_POST['POC'])) {
+                    echo $_POST['POC'];
+                }?>">
                 <br>
                 <p id="target07" class="text alertText">郵便番号を入力して下さい。</p>
             </div>
             <div>
                 <label>住所（都道府）</label>
-                <select name="prefecture" class="textPrefecture">
+                <select name="prefecture" class="textPrefecture" id="selectPre">
                     <option value="100">選択してください</option>
                     <script>
+                        
                         function toOneDimention($previousValue,$currentValure){
                             return $previousValue.concat($currentValure)
                         }
 
-                        var $prefecture = [
+                        var prefecture = [
                             ['北海道'],
                             ['青森県','秋田県','岩手県','山形県','宮城県','福島県'],
                             ['東京都','埼玉県','千葉県','茨城県','栃木県','群馬県','神奈川県'],
@@ -170,10 +166,11 @@
                             ['福岡県','大分県','佐賀県','熊本県','長崎県','宮城県','鹿児島県','沖縄県'],
                         ]
 
-                        var $prefectureNew = $prefecture.reduce(toOneDimention);
-                        for(var $i = 0; $i < $prefectureNew.length; $i++){
-                            document.write( "<option value=" + $prefectureNew[$i] + ">"+ $prefectureNew[$i] + "</option>");
+                        var prefectureNew = prefecture.reduce(toOneDimention);
+                        for(var i = 0; i < prefectureNew.length; i++){
+                            document.write( "<option value=" + prefectureNew[i] + ">"+ prefectureNew[i] + "</option>");
                         }
+
                     </script>
                 </select>
                 <br>
@@ -181,13 +178,17 @@
             </div>
             <div>
                 <label>住所（市区町村）</label>
-                <input type="text" class="textAdd01" size="20" maxlength="10" name="textAdd01">
+                <input type="text" class="textAdd01" size="20" maxlength="10" name="textAdd01" value="<?php if (!empty($_POST['TA01'])) {
+                    echo $_POST['TA01'];
+                }?>">
                 <br>
                 <p id="target09" class="text alertText">住所（市区町村）を入力して下さい。</p>
             </div>
             <div>
                 <label>住所（番地）</label>
-                <input type="text" class="textAdd02" size="20" maxlength="100" name="textAdd02">
+                <input type="text" class="textAdd02" size="20" maxlength="100" name="textAdd02" value="<?php if (!empty($_POST['TA02'])) {
+                    echo $_POST['TA02'];
+                }?>">
                 <br>
                 <p id="target10" class="text alertText">住所（番地）入力して下さい。</p>
             </div>
@@ -195,7 +196,9 @@
                 <label>アカウント権限</label>
                 <select name="textAuth" id="" class="textAuth">
                     <option value="0">  一般  </option>
-                    <option value="1">  管理者  </option>
+                    <option value="1" <?php if(!empty($_POST['TA'])&&$_POST['TA']==="1"){
+                        echo 'selected';
+                        }?>>  管理者  </option>
                 </select>
                 <br>
                 <br>
