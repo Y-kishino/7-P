@@ -68,6 +68,7 @@
                     return true;//送信を実行
                 }
             }
+
         </script>  
 </head>
 <body>
@@ -147,10 +148,9 @@
             </div>
             <div>
                 <label>住所（都道府）</label>
-                <select name="prefecture" class="textPrefecture" id="selectPre">
+                <select name="prefecture" class="textPrefecture" id="Pre">
                     <option value="100">選択してください</option>
                     <script>
-                        
                         function toOneDimention($previousValue,$currentValure){
                             return $previousValue.concat($currentValure)
                         }
@@ -168,9 +168,17 @@
 
                         var prefectureNew = prefecture.reduce(toOneDimention);
                         for(var i = 0; i < prefectureNew.length; i++){
-                            document.write( "<option value=" + prefectureNew[i] + ">"+ prefectureNew[i] + "</option>");
-                        }
 
+                            var PRE = "<?php echo $_POST['PRE']?>";
+                            if (PRE !=="" && PRE === prefectureNew[i]) {
+                                var selectElement = document.getElementById('Pre');
+                                var newElement = document.createElement('option');
+                                newElement.textContent = prefectureNew[i];
+                                newElement.value = prefectureNew[i];
+                                selectElement.appendChild(newElement);
+                                document.getElementById('Pre').options[i].selected = true;
+                             }
+                        }
                     </script>
                 </select>
                 <br>
