@@ -11,7 +11,7 @@
         ]);
         echo'接続成功';
         //sql文の格納
-        $sql = 'SELECT id,family_name,last_name,family_name_kana,last_name_kana,mail,gender,authority,delete_flag,registered_time,update_time FROM makeAccount ORDER BY id DESC';
+        $sql = 'SELECT * FROM makeAccount ORDER BY id DESC';
         $stmt = $dbh->query($sql);
         //sql文の結果の取り出し
         $table = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -85,7 +85,7 @@
                         <?php 
                             $gender = ($column['gender']);
                                 if($gender === '0'){
-                                    echo'男';
+                                    echo '男';
                                 } else if($gender === '1'){
                                     echo'女';
                                 } else {
@@ -128,11 +128,40 @@
                             <li class="list">
                                 <form class="form" action="update.php" method="post">
                                     <input class="submit" type="submit" value="更新">
+                                    <input type="hidden" value="<?php echo ($column['family_name'])?>" name="FN">
+                                    <input type="hidden" value="<?php echo ($column['last_name'])?>" name="LN">
+                                    <input type="hidden" value="<?php echo ($column['family_name_kana'])?>" name="FNK">
+                                    <input type="hidden" value="<?php echo ($column['last_name_kana'])?>" name="LNK">
+                                    <input type="hidden" value="<?php echo ($column['mail'])?>" name="MAIL">
+                                    <input type="hidden" value="<?php echo $gender;?>" name="GEN">
+                                    <input type="hidden" value="<?php echo ($column['postal_code'])?>" name="POC">
+                                    <input type="hidden" value="<?php echo ($column['prefecture'])?>" name="PRE">
+                                    <input type="hidden" value="<?php echo ($column['address_1'])?>" name="TA01">
+                                    <input type="hidden" value="<?php echo ($column['address_2'])?>" name="TA02">
+                                    <input type="hidden" value="<?php echo $authority ?>" name="TA">
+                                    <input type="hidden" value="<?php echo ($column['update_time'])?>" name="UPT">
+                                    <input type="hidden" value="<?php echo($column['id'])?>" name="id">
                                 </form>
                             </li>
                             <li class="list">
-                                <form class="form" action="delete.php" method="">
+                                <form class="form" action="delete.php" method="post">
                                     <input class="submit" type="submit" value="消去">
+                                    <input type="hidden" value="<?php echo ($column['id'])?>" name="id">
+                                    <input type="hidden" value="<?php echo ($column['family_name'])?>" name="family_name">
+                                    <input type="hidden" value="<?php echo ($column['last_name'])?>" name="last_name">
+                                    <input type="hidden" value="<?php echo ($column['family_name_kana'])?>" name="family_name_kana">
+                                    <input type="hidden" value="<?php echo ($column['last_name_kana'])?>" name="last_name_kana">
+                                    <input type="hidden" value="<?php echo ($column['mail'])?>" name="mail">
+                                    <input type="hidden" value="<?php echo ($column['pasword'])?>" name="pasword">
+                                    <input type="hidden" value="<?php echo ($column['gender'])?>" name="gender">
+                                    <input type="hidden" value="<?php echo ($column['postal_code'])?>" name="postal_code">
+                                    <input type="hidden" value="<?php echo ($column['prefecture'])?>" name="prefecture">
+                                    <input type="hidden" value="<?php echo ($column['address_1'])?>" name="address_1">
+                                    <input type="hidden" value="<?php echo ($column['address_2'])?>" name="address_2">
+                                    <input type="hidden" value="<?php echo ($column['authority'])?>" name="authority">
+                                    <input type="hidden" value="<?php echo ($column['delete_flag'])?>" name="delete_flag">
+                                    <input type="hidden" value="<?php echo ($column['registered_time'])?>" name="registered_time">
+                                    <input type="hidden" value="<?php echo ($column['update_time'])?>" name="update_time">
                                 </form>
                             </li>
                         </ul>

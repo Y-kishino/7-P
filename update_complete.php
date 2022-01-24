@@ -29,7 +29,7 @@ try{
 
     $dbh = null;
 }catch(PDOException $e){
-    echo'<h1 style="color:red;">エラーが発生した為アカウント登録できません</h1>'
+    echo'<h1 style="color:red;">エラーが発生した為アカウント更新できません</h1>'
     .$e->getMessage();
     exit();
 }

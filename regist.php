@@ -75,7 +75,7 @@
     <header>
         <div class="headerDiv">ナビゲーションバー</div>
     </header>
-    <main>
+    <main style="height: 117vh;">
         <form method="post" action="regist_confirm.php" name="form" onsubmit="return check();">
             <h1>
                 アカウント登録画面
@@ -151,10 +151,10 @@
                 <select name="prefecture" class="textPrefecture" id="Pre">
                     <option value="100">選択してください</option>
                     <script>
+
                         function toOneDimention($previousValue,$currentValure){
                             return $previousValue.concat($currentValure)
                         }
-
                         var prefecture = [
                             ['北海道'],
                             ['青森県','秋田県','岩手県','山形県','宮城県','福島県'],
@@ -164,21 +164,24 @@
                             ['鳥取県','島根県','山口県','広島県','岡山県'],
                             ['愛媛県','香川県','徳島県','高知県'],
                             ['福岡県','大分県','佐賀県','熊本県','長崎県','宮城県','鹿児島県','沖縄県'],
-                        ]
+                        ];
 
+                        
                         var prefectureNew = prefecture.reduce(toOneDimention);
+                        var jsPRE = "<?php if(!empty($_POST['PRE'])){
+                                    echo $_POST['PRE'];
+                                }?>";
+                                console.log(jsPRE);
                         for(var i = 0; i < prefectureNew.length; i++){
-
-                            var PRE = "<?php echo $_POST['PRE']?>";
-                            if (PRE !=="" && PRE === prefectureNew[i]) {
-                                var selectElement = document.getElementById('Pre');
-                                var newElement = document.createElement('option');
-                                newElement.textContent = prefectureNew[i];
-                                newElement.value = prefectureNew[i];
-                                selectElement.appendChild(newElement);
-                                document.getElementById('Pre').options[i].selected = true;
-                             }
-                        }
+                            var selectElement = document.getElementById('Pre');
+                            var newElement = document.createElement('option');
+                            newElement.textContent = prefectureNew[i];
+                            newElement.value = prefectureNew[i];
+                            selectElement.appendChild(newElement);
+                            if(jsPRE === newElement.value) 
+                            selectElement.options[i+=1].selected = true;
+                            }
+                                
                     </script>
                 </select>
                 <br>
