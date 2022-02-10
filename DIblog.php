@@ -1,3 +1,115 @@
+<?php
+
+    session_start();
+    //エラーメッセージ
+    $err = [];
+
+    //バリデーション
+    if (!$email = filter_input(INPUT_POST,'email')) {
+        $err['email'] = '<p style="color:red;">メールアドレスを入力して下さい</p>';
+    }
+    if (!$password = filter_input(INPUT_POST,'password')) {
+        $err['password'] = '<p style="color:red;">パスワードを入力して下さい</p>';
+    }
+
+    if (count($err)>0) {
+        //エラーがあった場合は戻す
+        //$_SESSIONは連想配列でデータを格納する。値の入れ忘れ注意
+        $_SESSION = $err;
+        //※header()あとで調べる。
+        header('Location:login.php');
+        return;
+    }
+
+    class UserLogic{
+        /**
+         * @param string $email
+         * @param string $password
+         * @return bool $result
+         */
+        public static function login($email,$password){
+            //結果
+            $result = false;
+
+            //ユーザーemailからとってきて取得
+            $user = self::getUserByEmail($email);
+
+            //emailが違っている時の処理
+            if(!$user){
+                $_SESSION['msg'] = '<p style="color:red;">メールアドレスが一致しません</p>';
+                return false;
+            }
+
+            //パスワードの照会
+            if(password_verify($password,$user['pasword'])){
+                // セッションハイジャック対策
+                session_regenerate_id(true);
+                //ログイン成功
+                $_SESSION['login_user'] = $user;
+                $result = true;
+                return $result;
+            }
+            
+            //パスワードが違っているときの処理
+            $_SESSION['msg'] = '<p style="color:red;">パスワードが一致しません</p>';
+            return $result;
+        }
+
+
+        public static function getUserByEmail($email){
+            /**
+             * @param string $email
+             * @return bool array|bool $user|false;
+             */
+
+            $dsn = "mysql:dbname=make_an_account;host=localhost;";
+            $user = "root";
+            $pass = "root";
+
+            try{
+                $dbh = new PDO($dsn,$user,$pass,[
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                ]);
+                // sql文の格納
+                $sql = 'SELECT * FROM makeAccount WHERE mail = "'.$email.'"';
+                // sql文の実行
+                $stmt = $dbh->query($sql);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                echo 'ログインID:';
+                echo($user['id']);
+                echo'<br>';
+                echo 'メールアドレス:';
+                echo($user['mail']);
+                echo'<br>';
+                echo '権限:';
+                $authority = ($user['authority']);
+                    if($authority === "0"){
+                        echo"一般";
+                    }else if ($authority === "1"){
+                         echo"管理者";
+                    }else{
+                        echo'エラーです';
+                   }
+                echo'<br>';
+                
+
+                return $user;
+            }catch(PDOException $e){
+                echo'<p style="color:red;">エラーが発生した為ログインできません</p>'.$e->getMessage();
+                return false;
+            }
+        }
+    }
+    
+    //ログイン成功時の処理
+    $result = UserLogic::login($email,$password);
+    //ログイン失敗時の処理
+    if(!$result){
+        header('location: login.php');
+        return;
+    }
+
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -8,13 +120,23 @@
     <link rel="stylesheet" href="DIblog.css">
 </head>
 <body>
+    <?php 
+        if (count($err) > 0) {
+            foreach($err as $e){
+                echo "<p>$e</p>";
+            }
+        } else {
+            echo"<p>ログイン完了致しました</p>";
+        }
+    ?>
     <img src="img/diblog_logo.jpg" alt="DIbloglogo">
     <header>
         <ul class="headerMenu">
             <li class="headerListTop">トップ</li>
             <li>プロフィール</li>
             <li>D.I blogについて</li>
-            <li><a href="http://localhost/make_an_account/regist.php">登録フォーム </a></li>
+            <!-- <li><a href="http://localhost/make_an_account/regist.php">登録フォーム </a> </li> -->
+            <li><?php UserLogic::login($email,$password) ?></li>
             <li>お問合せ</li>
             <li><a href="http://localhost/make_an_account/list.php">アカウント一覧</a></li>
             <li>その他</li>
