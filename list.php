@@ -1,4 +1,8 @@
-<!-- DB接続 -->
+<?php
+    session_start();
+    require_once'./function.php';
+ ?>
+ <!-- DB接続 -->
 <?php
 
     mb_internal_encoding("UTF-8");
@@ -32,15 +36,97 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="list.css">
-    <title>Document</title>
+    <link rel="stylesheet" href="list00.css">
+    <title>アカウント検索画面</title>
 </head>
 <body>
     <header class="header">
         <div class="headerDiv">ナビゲーションバー</div>
     </header>
-    <main class="main">
-        <h4 class="mainH1">アカウント一覧画面</h4>
+    <main class="main" style="height: fit-content;">
+
+
+
+
+        <h4 class="mainH1">アカウント検索</h4>
+        <form action="list.php" method="POST" class="searchArea">
+            <table class="table" border="1">
+                <tr>
+                    <td width="15%" align="center">名前（姓）</td>
+                    <td width="35%">
+                        <input type="text"  class="inputText" value="" name="familyName">
+                    </td>
+                    <td width="15%" align="center">名前（名）</td>
+                    <td width="35%">
+                        <input type="text"  class="inputText" value="" name="lastName">
+                    </td>
+                </tr>
+                <tr>
+                    <td width="15%" align="center">カナ（姓）</td>
+                    <td width="35%">
+                        <input type="text"  class="inputText" value="" name="familyNameKana"> 
+                    </td>
+                    <td width="15%" align="center">カナ（名）</td>
+                    <td width="35%">
+                        <input type="text"  class="inputText" value="" name="lastNameKana">
+                    </td>
+                </tr>
+                <tr>
+                    <td width="15%" align="center">メールアドレス</td>
+                    <td width="35%">
+                        <input type="text"  class="inputText" value="" name="mail"> 
+                    </td>
+                    <td width="15%" align="center">性別</td>
+                    <td width="35%" class="serachGender">
+                        <input type="radio" name="gender" value="" checked><p>なし</p>
+                        <input type="radio" name="gender" value="0"><p>男</p>
+                        <input type="radio" name="gender" value="1"><p>女</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="15%" align="center">アカウント権限</td>
+                    <td width="35%">
+                        <select name="textAuth" id="" class="inputText">
+                            <option value="">設定しない</option>
+                            <option value="0">  一般  </option>
+                            <option value="1">  管理者  </option>
+                        </select>
+                    </td>
+                    <td colspan="2"></td>
+                </tr>
+            </table>
+            <div class="submitArea">
+                <input type="submit" value="検索" class="serachSubmit" style="width: 200px;">
+            </div>
+        </form>
+        <?php 
+            //DB再接続
+            if (isset($_POST['familyName'])||isset($_POST['lastNname'])) {
+                mb_internal_encoding("UTF-8");
+                $dsn = "mysql:dbname=make_an_account;host=localhost";
+                $user = "root";
+                $pass = "root";
+                try{
+                    $dbh = new PDO($dsn,$user,$pass,[
+                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    ]);
+                    echo'接続成功';
+                    //sql文の格納
+                    $sql = "SELECT * FROM makeAccount WHERE family_name LIKE'%".$_POST['familyName']."%' 
+                    AND last_name LIKE'%".$_POST['lastName']."%' AND family_name_kana LIKE'%".$_POST['familyNameKana']."%' 
+                    AND last_name_kana LIKE'%".$_POST['lastNameKana']."%' AND mail LIKE'%".$_POST['mail']."%' 
+                    AND gender LIKE'%".$_POST['gender']."%' AND authority LIKE'%".$_POST['textAuth']."%' ORDER BY id DESC";
+                    $stmt = $dbh->query($sql);
+                    //sql文の結果の取り出し
+                    $table = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                    $dbh = null;
+                }catch(PDOException $e){
+                    echo'接続失敗'.$e->getMessage();
+                    exit();
+                }
+            }
+        ?>
         <table class="table" border="1">
             <thead>
                 <tr>
@@ -52,7 +138,7 @@
                     <th>メールアドレス</th>
                     <th width="50">性別</th>
                     <th>アカウント権限</th>
-                    <th>消去フラグ</th>
+                    <th>削除フラグ</th>
                     <th>登録日時</th>
                     <th>更新日時</th>
                     <th>操作</th>
@@ -62,7 +148,7 @@
                 <?php
                  foreach($table as $column){
                  ?>
-                <tr>
+                <tr class="tr">
                     <td align="center">
                         <?php echo($column['id'])?>
                     </td>
@@ -105,8 +191,8 @@
                                 }
                         ?>
                     </td>
-                    <td align="center">
-                        <?php 
+                    <td align="center" class="deleteFlag">
+                    <?php 
                             $deleteFlag = ($column['delete_flag']);
                              if($deleteFlag === "1"){
                                  echo"無効";
@@ -127,7 +213,7 @@
                         <ul class="ul">
                             <li class="list">
                                 <form class="form" action="update.php" method="post">
-                                    <input class="submit" type="submit" value="更新">
+                                    <input class="submit jssubmit" type="submit" value="更新">
                                     <input type="hidden" value="<?php echo ($column['family_name'])?>" name="FN">
                                     <input type="hidden" value="<?php echo ($column['last_name'])?>" name="LN">
                                     <input type="hidden" value="<?php echo ($column['family_name_kana'])?>" name="FNK">
@@ -145,7 +231,7 @@
                             </li>
                             <li class="list">
                                 <form class="form" action="delete.php" method="post">
-                                    <input class="submit" type="submit" value="消去">
+                                    <input class="submit jssubmit01" type="submit" value="削除">
                                     <input type="hidden" value="<?php echo ($column['id'])?>" name="id">
                                     <input type="hidden" value="<?php echo ($column['family_name'])?>" name="family_name">
                                     <input type="hidden" value="<?php echo ($column['last_name'])?>" name="last_name">
@@ -170,14 +256,55 @@
                 <?php } ?>
             </tbody>
         </table>
+        <script>
+        const updateButtonLists = document.querySelectorAll("input.submit.jssubmit");
+        const deleteButtonLists = document.querySelectorAll("input.submit.jssubmit01");
+        const deleteFlag = document.querySelectorAll("td.deleteFlag");
+        let lists = [];
+        let lists01 = [];
+        updateButtonLists.forEach(list => {
+            lists.push(list);
+        }) 
+        deleteButtonLists.forEach(list01 =>{
+            lists01.push(list01)
+        })
+        for (let index = 0; index < lists.length; index++) {
+            lists[index].addEventListener("click",(e)=>{
+                if (deleteFlag[index].innerText=="無効") {
+                    window.alert("削除フラグが無効の為、更新できません");
+                    e.preventDefault();
+                }   
+            })
+        }
+        for (let index = 0; index < lists01.length; index++) {
+            lists01[index].addEventListener("click",(e)=>{
+                if (deleteFlag[index].innerText=="無効") {
+                    window.alert("削除フラグが無効の為、削除できません");
+                    e.preventDefault();
+                }   
+            })
+        }
+        </script>
 
     </main>
     <footer class="footer">
         フッター
     </footer>
+    
 </body>
 </html>
 
 
 <!-- SELECT id,family_name,last_name,family_name_kana,last_name_kana,mail,gender,postal_code,prefecture,
 address_1,address_2,authority,delete_flag,registered_time,update_time FROM makeAccount; -->
+
+<!-- if(deleteFlag===1){
+                    window.alert("削除フラグ無効の為編集できません。")
+                    flag = 1; 
+                }
+
+                if(flag){
+                    return false;//送信中止
+                }else{
+                    return true;//送信を実行
+                } -->
